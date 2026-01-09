@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: |
           go mod tidy
-          CGO_ENABLED=1 go build -o journalctl-ui ./cmd
+          CGO_ENABLED=1 go build -o journalctl-gui ./cmd
 
       - name: Configure SSH
         run: |
@@ -50,7 +50,7 @@ jobs:
 
       - name: Deploy file to Raspberry Pi
         run: |
-          scp albionstats pi:/usr/local/bin/journalctl-gui
+          scp journalctl-gui pi:/usr/local/bin/journalctl-gui
 
 #      - name: Stop Service
 #        run: |
