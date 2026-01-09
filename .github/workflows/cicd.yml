@@ -50,16 +50,16 @@ jobs:
 
       - name: Deploy file to Raspberry Pi
         run: |
-          scp journalctl-gui pi:/usr/local/bin/journalctl-gui
+          scp journalctl-gui pi:/usr/local/bin/journalctl-gui_temp
 
-#      - name: Stop Service
-#        run: |
-#          ssh pi "sudo systemctl stop albionstats"
-#
-#      - name: Replace binary
-#        run: |
-#          ssh pi "sudo mv /usr/local/bin/albionstats_temp /usr/local/bin/albionstats && sudo chmod +x /usr/local/bin/albionstats"
-#
-#      - name: Start Service
-#        run: |
-#          ssh pi "sudo systemctl start albionstats"
+      - name: Stop Service
+        run: |
+          ssh pi "sudo systemctl stop journalctl-gui"
+
+      - name: Replace binary
+        run: |
+          ssh pi "sudo mv /usr/local/bin/journalctl-gui_temp /usr/local/bin/journalctl-gui && sudo chmod +x /usr/local/bin/journalctl-gui"
+
+      - name: Start Service
+        run: |
+          ssh pi "sudo systemctl start journalctl-gui"
