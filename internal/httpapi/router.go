@@ -7,6 +7,20 @@ import (
 	"github.com/bricefrisco/journalctl-gui/internal/journal"
 )
 
+func withCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func NewRouter() http.Handler {
 	mux := http.NewServeMux()
 
@@ -21,5 +35,5 @@ func NewRouter() http.Handler {
 		_ = json.NewEncoder(w).Encode(services)
 	})
 
-	return mux
+	return withCORS(mux)
 }
