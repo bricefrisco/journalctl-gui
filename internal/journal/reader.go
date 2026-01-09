@@ -2,6 +2,7 @@ package journal
 
 import (
 	"sort"
+	"strings"
 
 	"github.com/coreos/go-systemd/v22/sdjournal"
 )
@@ -25,6 +26,8 @@ func ListServices() ([]string, error) {
 		return nil, err
 	}
 
-	sort.Strings(values)
+	sort.Slice(values, func(i, j int) bool {
+		return strings.ToLower(values[i]) < strings.ToLower(values[j])
+	})
 	return values, nil
 }
