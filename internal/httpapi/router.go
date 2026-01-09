@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/bricefrisco/journalctl-gui/internal/journal"
+	"github.com/bricefrisco/journalctl-gui/internal/util"
 )
 
 func withCORS(next http.Handler) http.Handler {
@@ -33,6 +34,26 @@ func NewRouter() http.Handler {
 
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(services)
+	})
+
+	mux.HandleFunc("/api/logs", func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query()
+
+		limit := util.Atoi(q.Get("limit"))
+		if limit <= 0 || limit > 500 {
+			limit = 100
+		}
+
+		cursor := q.Get("cursor")
+
+		page, err := journal.ListLogsPage(limit, cursor)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(page)
 	})
 
 	return withCORS(mux)
